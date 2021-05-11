@@ -20148,7 +20148,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-  return dateObj.toLocaleDateString().replace(/\//g, '-');
+  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth(), "-").concat(dateObj.getFullYear());
 });
 var pinCode = prompt("PinCode"); // this is required
 // const pinCode = 424101; // delete this
