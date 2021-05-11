@@ -868,31 +868,6 @@ try {
   Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}],"mes7":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var publicKey = 'BLAufgwxKeTTcqstqXVW5wwPJBn5NCDKf6ssdzm3oifsVhvBPL2MCbbdycXcZvD6YJdfM8ewY2a778trIg72iSM';
-
-var urlB64ToUint8Array = function urlB64ToUint8Array(base64String) {
-  var padding = '='.repeat((4 - base64String.length % 4) % 4);
-  var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-  var rawData = window.atob(base64);
-  var outputArray = new Uint8Array(rawData.length);
-
-  for (var i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-
-  return outputArray;
-};
-
-var _default = urlB64ToUint8Array(publicKey);
-
-exports.default = _default;
 },{}],"FRly":[function(require,module,exports) {
 'use strict'
 
@@ -20151,8 +20126,6 @@ var define;
 
 require("regenerator-runtime/runtime");
 
-var _publicServerKey = _interopRequireDefault(require("./publicServerKey"));
-
 var _lodash = _interopRequireDefault(require("lodash"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -20172,23 +20145,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-var swRegistration = null;
-var isSubscribed = false; // code for service worker
-
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  console.log('Service Worker and Push are supported');
-  navigator.serviceWorker.register("sw.js").then(function (swReg) {
-    console.log('Service Worker is registered', swReg);
-    swRegistration = swReg;
-    subscribePushMessage();
-  }).catch(function (error) {
-    console.error('Service Worker Error', error);
-  });
-} else {
-  console.warn('Push messaging is not supported');
-  pushButton.textContent = 'Push Not Supported';
-}
 
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
@@ -20284,32 +20240,36 @@ var finalPrintObj = function finalPrintObj(inputObj) {
   });
   finalHtml += '</div>';
   return finalHtml;
-}; // setInterval(() => {
-// availableSlots.then(res => {
-//     document.getElementById('body').innerHTML = finalPrintObj(res);
-//     console.log(res);
-// })
-// }, 5000);
+};
 
+var checkSlot = function checkSlot(interval) {
+  availableSlots.then(function (res) {
+    console.log('Notification permission granted');
 
-function subscribePushMessage() {
-  swRegistration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: _publicServerKey.default
-  }).then(function (subscription) {
-    console.log('User IS subscribed.');
-    isSubscribed = true;
-    Notification.requestPermission().then(function (permission) {
-      if (permission === 'granted') {
-        setInterval(function () {
-          availableSlots.then(function (res) {
-            if (res.length) new Notification('Vaccine Available');
-            document.getElementById('body').innerHTML = finalPrintObj(res);
-            console.log(res);
-          });
-        }, 5000);
-      }
-    });
+    if (res) {
+      var options = {
+        body: 'Vaccine Available!!',
+        silent: false
+      };
+      var not = new Notification('Vaccine Available', options);
+
+      not.onclick = function () {
+        clearInterval(interval);
+        window.open('https://www.cowin.gov.in/home');
+      };
+    }
+
+    document.getElementById('body').innerHTML = finalPrintObj(res);
+    console.log(res);
   });
-}
-},{"regenerator-runtime/runtime":"KA2S","./publicServerKey":"mes7","lodash":"HJaA","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
+};
+
+Notification.requestPermission().then(function (permission) {
+  if (permission === 'granted') {
+    checkSlot();
+    var interval = setInterval(function () {
+      return checkSlot(interval);
+    }, 60000);
+  }
+});
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
