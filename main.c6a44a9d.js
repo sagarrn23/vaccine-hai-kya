@@ -20153,75 +20153,82 @@ var dates = [0, 7, 14, 21, 28].map(function (item) {
 var pinCode = prompt("PinCode"); // this is required
 // const pinCode = 424101; // delete this
 
-var vaccineData = dates.map( /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item) {
-    var apiUrl, fetchData, getFetchData;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            apiUrl = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=".concat(pinCode, "&date=").concat(item);
-            _context.next = 3;
-            return fetch(apiUrl);
+var vaccineData = function vaccineData() {
+  return dates.map( /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item) {
+      var apiUrl, fetchData, getFetchData;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              apiUrl = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=".concat(pinCode, "&date=").concat(item);
+              _context.next = 3;
+              return fetch(apiUrl);
 
-          case 3:
-            fetchData = _context.sent;
-            _context.next = 6;
-            return fetchData.json();
+            case 3:
+              fetchData = _context.sent;
+              _context.next = 6;
+              return fetchData.json();
 
-          case 6:
-            getFetchData = _context.sent;
-            _context.next = 9;
-            return getFetchData;
+            case 6:
+              getFetchData = _context.sent;
+              _context.next = 9;
+              return getFetchData;
 
-          case 9:
-            return _context.abrupt("return", _context.sent);
+            case 9:
+              return _context.abrupt("return", _context.sent);
 
-          case 10:
-          case "end":
-            return _context.stop();
+            case 10:
+            case "end":
+              return _context.stop();
+          }
         }
+      }, _callee);
+    }));
+
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+};
+
+var finalCenters = function finalCenters() {
+  return Promise.all(vaccineData()).then(function (res) {
+    var centers = res.map(function (item) {
+      return item === null || item === void 0 ? void 0 : item.centers.map(function (center) {
+        return center;
+      });
+    });
+    return centers.flat();
+  });
+};
+
+var availableSlots = function availableSlots() {
+  return finalCenters().then(function (res) {
+    var slot = res.filter(function (item) {
+      return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
+        return session.available_capacity > 0;
+      }).length) !== 0; // set condition to !== 0
+    }).flat();
+
+    var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
+      var s = _toConsumableArray(item.sessions); // console.log(item);
+
+
+      var avSessions = s.filter(function (session) {
+        // return session.date === '11-05-2021'; // delete this line
+        return session.available_capacity > 0; // set this conditions
+      });
+      item.sessions = avSessions;
+
+      if (item.sessions.length) {
+        return item;
       }
-    }, _callee);
-  }));
-
-  return function (_x) {
-    return _ref.apply(this, arguments);
-  };
-}());
-var finalCenters = Promise.all(vaccineData).then(function (res) {
-  var centers = res.map(function (item) {
-    return item === null || item === void 0 ? void 0 : item.centers.map(function (center) {
-      return center;
     });
+
+    return finalAvSlot.flat();
   });
-  return centers.flat();
-});
-var availableSlots = finalCenters.then(function (res) {
-  console.log(res);
-  var slot = res.filter(function (item) {
-    return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
-      return session.available_capacity > 0;
-    }).length) !== 0; // set condition to !== 0
-  }).flat();
-
-  var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
-    var s = _toConsumableArray(item.sessions); // console.log(item);
-
-
-    var avSessions = s.filter(function (session) {
-      // return session.date === '11-05-2021'; // delete this line
-      return session.available_capacity > 0; // set this conditions
-    });
-    item.sessions = avSessions;
-
-    if (item.sessions.length) {
-      return item;
-    }
-  });
-
-  return finalAvSlot.flat();
-});
+};
 
 var finalPrintObj = function finalPrintObj(inputObj) {
   var finalHtml = '<div class="info-wrap">';
@@ -20244,7 +20251,7 @@ var finalPrintObj = function finalPrintObj(inputObj) {
 };
 
 var checkSlot = function checkSlot(interval) {
-  availableSlots.then(function (res) {
+  availableSlots().then(function (res) {
     console.log('Notification permission granted');
     console.log(res);
 
@@ -20256,7 +20263,7 @@ var checkSlot = function checkSlot(interval) {
       var not = new Notification('Vaccine Available', options);
 
       not.onclick = function () {
-        clearInterval(interval);
+        if (interval) clearInterval(interval);
         window.open('https://www.cowin.gov.in/home');
       };
     }
@@ -20268,20 +20275,18 @@ var checkSlot = function checkSlot(interval) {
 
 
 if (Notification.permission === 'granted') {
-  // document.getElementById('loading').innerHTML = "Loading..."
   checkSlot();
   var interval = setInterval(function () {
     return checkSlot(interval);
-  }, 60000);
+  }, 120000);
 } else {
   Notification.requestPermission().then(function (permission) {
-    // document.getElementById('loading').innerHTML = "Loading...."
     if (permission === 'granted') {
       checkSlot();
 
       var _interval = setInterval(function () {
         return checkSlot(_interval);
-      }, 60000);
+      }, 120000);
     }
   });
 }
