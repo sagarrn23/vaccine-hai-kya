@@ -20148,7 +20148,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-  return dateObj.toLocaleDateString().replace(/\//g, '-');
+  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth(), "-").concat(dateObj.getFullYear());
 });
 var pinCode = prompt("PinCode"); // this is required
 // const pinCode = 424101; // delete this
@@ -20191,7 +20191,7 @@ var vaccineData = dates.map( /*#__PURE__*/function () {
 }());
 var finalCenters = Promise.all(vaccineData).then(function (res) {
   var centers = res.map(function (item) {
-    return item.centers.map(function (center) {
+    return item === null || item === void 0 ? void 0 : item.centers.map(function (center) {
       return center;
     });
   });
@@ -20200,9 +20200,9 @@ var finalCenters = Promise.all(vaccineData).then(function (res) {
 var availableSlots = finalCenters.then(function (res) {
   console.log(res);
   var slot = res.filter(function (item) {
-    return item.sessions.filter(function (session) {
+    return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
       return session.available_capacity > 0;
-    }).length !== 0; // set condition to !== 0
+    }).length) !== 0; // set condition to !== 0
   }).flat();
 
   var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
@@ -20262,16 +20262,27 @@ var checkSlot = function checkSlot(interval) {
     document.getElementById('body').innerHTML = finalPrintObj(res);
     console.log(res);
   });
-};
+}; // console.log(Notification.permission);
 
-Notification.requestPermission().then(function (permission) {
-  if (permission === 'granted') {
-    checkSlot();
-    var interval = setInterval(function () {
-      return checkSlot(interval);
-    }, 60000);
-  }
-});
+
+if (Notification.permission === 'granted') {
+  // document.getElementById('loading').innerHTML = "Loading..."
+  checkSlot();
+  var interval = setInterval(function () {
+    return checkSlot(interval);
+  }, 60000);
+} else {
+  Notification.requestPermission().then(function (permission) {
+    // document.getElementById('loading').innerHTML = "Loading...."
+    if (permission === 'granted') {
+      checkSlot();
+
+      var _interval = setInterval(function () {
+        return checkSlot(_interval);
+      }, 60000);
+    }
+  });
+}
 },{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","lodash":"node_modules/lodash/lodash.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -20300,7 +20311,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38443" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35137" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

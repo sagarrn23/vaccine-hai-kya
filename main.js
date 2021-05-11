@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const dates = [0,7,14,21,28].map(item => {
     const dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-    return dateObj.toLocaleDateString().replace(/\//g,'-');
+    return `${dateObj.getDate()}-${dateObj.getMonth()}-${dateObj.getFullYear()}`;
 })
 const pinCode = prompt("PinCode"); // this is required
 // const pinCode = 424101; // delete this
@@ -18,9 +18,7 @@ const vaccineData = dates.map(async (item) => {
 
 const finalCenters = Promise.all(vaccineData).then(res => {
     const centers = res.map(item => {
-        return item.centers.map(center => {
-            return center;
-        })
+        return item?.centers.map(center => center)
     })
     return centers.flat();
 });
@@ -28,7 +26,7 @@ const finalCenters = Promise.all(vaccineData).then(res => {
 const availableSlots = finalCenters.then(res => {
     console.log(res);
     const slot = res.filter(item => {
-        return item.sessions.filter(session => {
+        return item?.sessions.filter(session => {
             return session.available_capacity > 0;
         }).length !== 0; // set condition to !== 0
     }).flat();
@@ -89,9 +87,17 @@ const checkSlot = (interval) => {
     });
 }
 
-Notification.requestPermission().then((permission) => {
-    if(permission === 'granted') {
-        checkSlot();
-        let interval = setInterval(() => checkSlot(interval), 60000)
-    }
-})
+// console.log(Notification.permission);
+if(Notification.permission === 'granted') {
+    // document.getElementById('loading').innerHTML = "Loading..."
+    checkSlot();
+    let interval = setInterval(() => checkSlot(interval), 60000)
+} else {
+    Notification.requestPermission().then((permission) => {
+        // document.getElementById('loading').innerHTML = "Loading...."
+        if(permission === 'granted') {
+            checkSlot();
+            let interval = setInterval(() => checkSlot(interval), 60000)
+        }
+    })
+}
