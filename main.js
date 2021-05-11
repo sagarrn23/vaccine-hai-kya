@@ -1,28 +1,27 @@
 import 'regenerator-runtime/runtime';
-import publickKey from './publicServerKey';
+// import publickKey from './publicServerKey';
 import _ from 'lodash';
 
-let swRegistration = null;
-let isSubscribed = false;
+// let swRegistration = null;
+// let isSubscribed = false;
 
-// code for service worker
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-    console.log('Service Worker and Push are supported');
+// // code for service worker
+// if ('serviceWorker' in navigator && 'PushManager' in window) {
+//     console.log('Service Worker and Push are supported');
 
-    navigator.serviceWorker.register('sw.js')
-        .then(function(swReg) {
-            console.log('Service Worker is registered', swReg);
+//     navigator.serviceWorker.register('sw.js')
+//         .then(function(swReg) {
+//             console.log('Service Worker is registered', swReg);
 
-            swRegistration = swReg;
-            subscribePushMessage()
-        })
-        .catch(function(error) {
-            console.error('Service Worker Error', error);
-        });
-} else {
-    console.warn('Push messaging is not supported');
-    pushButton.textContent = 'Push Not Supported';
-}
+//             swRegistration = swReg;
+//             subscribePushMessage()
+//         })
+//         .catch(function(error) {
+//             console.error('Service Worker Error', error);
+//         });
+// } else {
+//     console.warn('Push messaging is not supported');
+// }
 
 
 const dates = [0,7,14,21,28].map(item => {
@@ -93,31 +92,79 @@ const finalPrintObj = (inputObj) => {
     return finalHtml;
 }
 
-// setInterval(() => {
-    // availableSlots.then(res => {
-    //     document.getElementById('body').innerHTML = finalPrintObj(res);
-    //     console.log(res);
-    // })
-// }, 5000);
+// function subscribePushMessage() {
+//     swRegistration.pushManager.subscribe({
+//         userVisibleOnly: true,  
+//         applicationServerKey: publickKey
+//     })
+//     .then(function(subscription) {
+//         console.log('User IS subscribed.');
+//         isSubscribed = true;
+//         Notification.requestPermission().then((permission) => {
+//             if(permission === 'granted') {
+//                 let interval = setInterval(() => {
+//                     availableSlots.then(res => {
+//                         console.log('Notification permission granted');
+//                         if(res) {
+//                             var options = {
+//                                 body: 'Vaccine Available!!',
+//                                 silent: false
+//                             }
+//                             const not = new Notification('Vaccine Available', options);
+//                             not.onclick = () => {
+//                                 window.open('https://www.cowin.gov.in/home');
+//                             }
+//                         }
+//                         document.getElementById('body').innerHTML = finalPrintObj(res);
+//                         console.log(res);
+//                         clearInterval(interval)
+//                     });
+//                 }, 60000);
+//             }
+//         })
+//     });
+// }
 
-function subscribePushMessage() {
-    swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,  
-        applicationServerKey: publickKey
-    })
-    .then(function(subscription) {
-        console.log('User IS subscribed.');
-        isSubscribed = true;
-        Notification.requestPermission().then((permission) => {
-            if(permission === 'granted') {
-                setInterval(() => {
-                    availableSlots.then(res => {
-                        if(res.length) new Notification('Vaccine Available');
-                        document.getElementById('body').innerHTML = finalPrintObj(res);
-                        console.log(res);
-                    })
-                }, 5000);
+const checkSlot = (interval) => {
+    availableSlots.then(res => {
+        console.log('Notification permission granted');
+        if(res) {
+            var options = {
+                body: 'Vaccine Available!!',
+                silent: false
             }
-        })
+            const not = new Notification('Vaccine Available', options);
+            not.onclick = () => {
+                clearInterval(interval)
+                window.open('https://www.cowin.gov.in/home');
+            }
+        }
+        document.getElementById('body').innerHTML = finalPrintObj(res);
+        console.log(res);
     });
 }
+
+Notification.requestPermission().then((permission) => {
+    if(permission === 'granted') {
+        // let interval = setInterval(() => {
+        //     availableSlots.then(res => {
+        //         console.log('Notification permission granted');
+        //         if(res) {
+        //             var options = {
+        //                 body: 'Vaccine Available!!',
+        //                 silent: false
+        //             }
+        //             const not = new Notification('Vaccine Available', options);
+        //             not.onclick = () => {
+        //                 clearInterval(interval)
+        //                 window.open('https://www.cowin.gov.in/home');
+        //             }
+        //         }
+        //         document.getElementById('body').innerHTML = finalPrintObj(res);
+        //         console.log(res);
+        //     });
+        // }, 1000);
+        checkSlot();
+        let interval = setInterval(() => checkSlot(interval), 60000)
+    }
+})

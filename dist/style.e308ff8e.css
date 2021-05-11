@@ -11,6 +11,10 @@
     margin: 0;
 }
 
+h1 {
+    text-align: center;
+}
+
 .info-card {
     padding: 20px;
     border-radius: 5px;

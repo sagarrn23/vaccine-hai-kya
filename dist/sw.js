@@ -118,10 +118,12 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"sw.js":[function(require,module,exports) {
-// self.addEventListener('push', () => {
-//     console.log('it workd');
-// });
-},{}],"../../.nvm/versions/node/v14.15.4/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+self.addEventListener('notificationclick', function (event) {
+  console.log('[Service Worker] Notification click received.');
+  event.notification.close();
+  event.waitUntil(clients.openWindow('https://www.cowin.gov.in/home'));
+});
+},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -149,7 +151,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46879" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38443" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -325,5 +327,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../.nvm/versions/node/v14.15.4/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","sw.js"], null)
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","sw.js"], null)
 //# sourceMappingURL=/sw.js.map

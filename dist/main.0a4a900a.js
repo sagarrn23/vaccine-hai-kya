@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/regenerator-runtime/runtime.js":[function(require,module,exports) {
+})({"KA2S":[function(require,module,exports) {
 var define;
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -868,7 +868,32 @@ try {
   Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}],"node_modules/base64-js/index.js":[function(require,module,exports) {
+},{}],"mes7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var publicKey = 'BLAufgwxKeTTcqstqXVW5wwPJBn5NCDKf6ssdzm3oifsVhvBPL2MCbbdycXcZvD6YJdfM8ewY2a778trIg72iSM';
+
+var urlB64ToUint8Array = function urlB64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+};
+
+var _default = urlB64ToUint8Array(publicKey);
+
+exports.default = _default;
+},{}],"FRly":[function(require,module,exports) {
 'use strict'
 
 exports.byteLength = byteLength
@@ -1020,7 +1045,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],"node_modules/ieee754/index.js":[function(require,module,exports) {
+},{}],"Quj6":[function(require,module,exports) {
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -1107,14 +1132,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],"node_modules/isarray/index.js":[function(require,module,exports) {
+},{}],"aqZJ":[function(require,module,exports) {
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],"node_modules/buffer/index.js":[function(require,module,exports) {
+},{}],"aMB2":[function(require,module,exports) {
 
 var global = arguments[3];
 /*!
@@ -2907,7 +2932,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":"node_modules/base64-js/index.js","ieee754":"node_modules/ieee754/index.js","isarray":"node_modules/isarray/index.js","buffer":"node_modules/buffer/index.js"}],"node_modules/lodash/lodash.js":[function(require,module,exports) {
+},{"base64-js":"FRly","ieee754":"Quj6","isarray":"aqZJ","buffer":"aMB2"}],"HJaA":[function(require,module,exports) {
 var global = arguments[3];
 var Buffer = require("buffer").Buffer;
 var define;
@@ -20121,10 +20146,12 @@ var define;
   }
 }.call(this));
 
-},{"buffer":"node_modules/buffer/index.js"}],"main.js":[function(require,module,exports) {
+},{"buffer":"aMB2"}],"epB2":[function(require,module,exports) {
 "use strict";
 
 require("regenerator-runtime/runtime");
+
+var _publicServerKey = _interopRequireDefault(require("./publicServerKey"));
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
@@ -20146,23 +20173,23 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-// let swRegistration = null;
-// let isSubscribed = false;
-// // code for service worker
-// if ('serviceWorker' in navigator && 'PushManager' in window) {
-//     console.log('Service Worker and Push are supported');
-//     navigator.serviceWorker.register('sw.js')
-//         .then(function(swReg) {
-//             console.log('Service Worker is registered', swReg);
-//             swRegistration = swReg;
-//             subscribePushMessage()
-//         })
-//         .catch(function(error) {
-//             console.error('Service Worker Error', error);
-//         });
-// } else {
-//     console.warn('Push messaging is not supported');
-// }
+var swRegistration = null;
+var isSubscribed = false; // code for service worker
+
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  console.log('Service Worker and Push are supported');
+  navigator.serviceWorker.register("sw.js").then(function (swReg) {
+    console.log('Service Worker is registered', swReg);
+    swRegistration = swReg;
+    subscribePushMessage();
+  }).catch(function (error) {
+    console.error('Service Worker Error', error);
+  });
+} else {
+  console.warn('Push messaging is not supported');
+  pushButton.textContent = 'Push Not Supported';
+}
+
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
   return dateObj.toLocaleDateString().replace(/\//g, '-');
@@ -20257,291 +20284,32 @@ var finalPrintObj = function finalPrintObj(inputObj) {
   });
   finalHtml += '</div>';
   return finalHtml;
-}; // function subscribePushMessage() {
-//     swRegistration.pushManager.subscribe({
-//         userVisibleOnly: true,  
-//         applicationServerKey: publickKey
-//     })
-//     .then(function(subscription) {
-//         console.log('User IS subscribed.');
-//         isSubscribed = true;
-//         Notification.requestPermission().then((permission) => {
-//             if(permission === 'granted') {
-//                 let interval = setInterval(() => {
-//                     availableSlots.then(res => {
-//                         console.log('Notification permission granted');
-//                         if(res) {
-//                             var options = {
-//                                 body: 'Vaccine Available!!',
-//                                 silent: false
-//                             }
-//                             const not = new Notification('Vaccine Available', options);
-//                             not.onclick = () => {
-//                                 window.open('https://www.cowin.gov.in/home');
-//                             }
-//                         }
-//                         document.getElementById('body').innerHTML = finalPrintObj(res);
-//                         console.log(res);
-//                         clearInterval(interval)
-//                     });
-//                 }, 60000);
-//             }
-//         })
-//     });
-// }
+}; // setInterval(() => {
+// availableSlots.then(res => {
+//     document.getElementById('body').innerHTML = finalPrintObj(res);
+//     console.log(res);
+// })
+// }, 5000);
 
 
-var checkSlot = function checkSlot(interval) {
-  availableSlots.then(function (res) {
-    console.log('Notification permission granted');
-
-    if (res) {
-      var options = {
-        body: 'Vaccine Available!!',
-        silent: false
-      };
-      var not = new Notification('Vaccine Available', options);
-
-      not.onclick = function () {
-        clearInterval(interval);
-        window.open('https://www.cowin.gov.in/home');
-      };
-    }
-
-    document.getElementById('body').innerHTML = finalPrintObj(res);
-    console.log(res);
-  });
-};
-
-Notification.requestPermission().then(function (permission) {
-  if (permission === 'granted') {
-    // let interval = setInterval(() => {
-    //     availableSlots.then(res => {
-    //         console.log('Notification permission granted');
-    //         if(res) {
-    //             var options = {
-    //                 body: 'Vaccine Available!!',
-    //                 silent: false
-    //             }
-    //             const not = new Notification('Vaccine Available', options);
-    //             not.onclick = () => {
-    //                 clearInterval(interval)
-    //                 window.open('https://www.cowin.gov.in/home');
-    //             }
-    //         }
-    //         document.getElementById('body').innerHTML = finalPrintObj(res);
-    //         console.log(res);
-    //     });
-    // }, 1000);
-    checkSlot();
-    var interval = setInterval(function () {
-      return checkSlot(interval);
-    }, 60000);
-  }
-});
-},{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","lodash":"node_modules/lodash/lodash.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38443" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
+function subscribePushMessage() {
+  swRegistration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: _publicServerKey.default
+  }).then(function (subscription) {
+    console.log('User IS subscribed.');
+    isSubscribed = true;
+    Notification.requestPermission().then(function (permission) {
+      if (permission === 'granted') {
+        setInterval(function () {
+          availableSlots.then(function (res) {
+            if (res.length) new Notification('Vaccine Available');
+            document.getElementById('body').innerHTML = finalPrintObj(res);
+            console.log(res);
+          });
+        }, 5000);
       }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
+    });
   });
 }
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.1f19ae8e.js.map
+},{"regenerator-runtime/runtime":"KA2S","./publicServerKey":"mes7","lodash":"HJaA","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
