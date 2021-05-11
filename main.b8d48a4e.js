@@ -20200,9 +20200,9 @@ var finalCenters = Promise.all(vaccineData).then(function (res) {
 var availableSlots = finalCenters.then(function (res) {
   console.log(res);
   var slot = res.filter(function (item) {
-    return item.sessions.filter(function (session) {
+    return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
       return session.available_capacity > 0;
-    }).length === 0; // set condition to !== 0
+    }).length) === 0; // set condition to !== 0
   }).flat();
 
   var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
