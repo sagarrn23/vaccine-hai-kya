@@ -20146,10 +20146,9 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var swRegistration = null;
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth(), "-").concat(dateObj.getFullYear());
+  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth() + 1, "-").concat(dateObj.getFullYear());
 });
 var pinCode = prompt("PinCode"); // this is required
 // const pinCode = 424101; // delete this
@@ -20231,12 +20230,13 @@ var finalPrintObj = function finalPrintObj(inputObj) {
     finalHtml += "<li><strong>Name:</strong> ".concat(item.name, "</li>");
     finalHtml += "<li><strong>Address:</strong> ".concat(item.address, "</li>");
     finalHtml += "<li><strong>Fee Type:</strong> ".concat(item.fee_type, "</li>");
+    finalHtml += "<li><strong>Time: </strong> ".concat(item.from, " to ").concat(item.to, "</li>");
     item.sessions.forEach(function (session) {
+      finalHtml += '<hr>';
       finalHtml += "<li><strong>Date:</strong> ".concat(session.date, "</li>");
       finalHtml += "<li><strong>Age Limit:</strong> ".concat(session.min_age_limit, "+</li>");
       finalHtml += "<li><strong>Vaccine:</strong> ".concat(session.vaccine, "</li>");
     });
-    finalHtml += "<li><strong>Time: </strong> ".concat(item.from, " to ").concat(item.to, "</li>");
     finalHtml += '</ul>';
   });
   finalHtml += '</div>';
@@ -20246,24 +20246,19 @@ var finalPrintObj = function finalPrintObj(inputObj) {
 var checkSlot = function checkSlot(interval) {
   availableSlots.then(function (res) {
     console.log('Notification permission granted');
+    console.log(res);
 
     if (res.length) {
-      // var options = {
-      //     body: 'Vaccine Available!!',
-      //     silent: false
-      // }
-      // const not = new Notification('Vaccine Available', options);
-      // not.onclick = () => {
-      //     clearInterval(interval)
-      //     window.open('https://www.cowin.gov.in/home');
-      // }
-      navigator.serviceWorker.ready.then(function (registration) {
-        registration.showNotification('Vaccine Available', {
-          body: 'Vaccine Available!!',
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: 'vibration-sample'
-        });
-      });
+      var options = {
+        body: 'Vaccine Available!!',
+        silent: false
+      };
+      var not = new Notification('Vaccine Available', options);
+
+      not.onclick = function () {
+        clearInterval(interval);
+        window.open('https://www.cowin.gov.in/home');
+      };
     }
 
     document.getElementById('body').innerHTML = finalPrintObj(res);
@@ -20289,19 +20284,5 @@ if (Notification.permission === 'granted') {
       }, 60000);
     }
   });
-} // code for service worker
-
-
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  console.log('Service Worker and Push are supported');
-  navigator.serviceWorker.register("sw.js").then(function (swReg) {
-    console.log('Service Worker is registered', swReg);
-    swRegistration = swReg;
-    subscribePushMessage();
-  }).catch(function (error) {
-    console.error('Service Worker Error', error);
-  });
-} else {
-  console.warn('Push messaging is not supported');
 }
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
