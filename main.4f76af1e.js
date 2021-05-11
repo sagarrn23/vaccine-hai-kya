@@ -20191,7 +20191,7 @@ var vaccineData = dates.map( /*#__PURE__*/function () {
 }());
 var finalCenters = Promise.all(vaccineData).then(function (res) {
   var centers = res.map(function (item) {
-    return item.centers.map(function (center) {
+    return item === null || item === void 0 ? void 0 : item.centers.map(function (center) {
       return center;
     });
   });
