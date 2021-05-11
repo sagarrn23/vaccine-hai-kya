@@ -20155,13 +20155,13 @@ var pinCode = prompt("PinCode"); // this is required
 
 var vaccineData = function vaccineData() {
   return dates.map( /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item) {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(date) {
       var apiUrl, fetchData, getFetchData;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              apiUrl = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=".concat(pinCode, "&date=").concat(item);
+              apiUrl = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=".concat(pinCode, "&date=").concat(date);
               _context.next = 3;
               return fetch(apiUrl);
 
@@ -20243,6 +20243,10 @@ var finalPrintObj = function finalPrintObj(inputObj) {
       finalHtml += "<li><strong>Date:</strong> ".concat(session.date, "</li>");
       finalHtml += "<li><strong>Age Limit:</strong> ".concat(session.min_age_limit, "+</li>");
       finalHtml += "<li><strong>Vaccine:</strong> ".concat(session.vaccine, "</li>");
+      finalHtml += "<li><strong>Available Capacity:</strong> ".concat(session.available_capacity, "</li>");
+      finalHtml += "<li class=\"slots\">\n                <div><strong>Slots:</strong></div>\n                <div> ".concat(session.slots.map(function (slot) {
+        return "<p>".concat(slot, "</p>");
+      }).join(''), "</div>\n            </li>");
     });
     finalHtml += '</ul>';
   });
@@ -20278,7 +20282,7 @@ if (Notification.permission === 'granted') {
   checkSlot();
   var interval = setInterval(function () {
     return checkSlot(interval);
-  }, 120000);
+  }, 60000);
 } else {
   Notification.requestPermission().then(function (permission) {
     if (permission === 'granted') {
@@ -20286,7 +20290,7 @@ if (Notification.permission === 'granted') {
 
       var _interval = setInterval(function () {
         return checkSlot(_interval);
-      }, 120000);
+      }, 60000);
     }
   });
 }
