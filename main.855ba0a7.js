@@ -20202,7 +20202,7 @@ var availableSlots = finalCenters.then(function (res) {
   var slot = res.filter(function (item) {
     return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
       return session.available_capacity > 0;
-    }).length) === 0; // set condition to !== 0
+    }).length) !== 0; // set condition to !== 0
   }).flat();
 
   var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
@@ -20210,8 +20210,7 @@ var availableSlots = finalCenters.then(function (res) {
 
 
     var avSessions = s.filter(function (session) {
-      return session.date === '11-05-2021'; // delete this line
-
+      // return session.date === '11-05-2021'; // delete this line
       return session.available_capacity > 0; // set this conditions
     });
     item.sessions = avSessions;
@@ -20263,20 +20262,18 @@ var checkSlot = function checkSlot(interval) {
     document.getElementById('body').innerHTML = finalPrintObj(res);
     console.log(res);
   });
-};
+}; // console.log(Notification.permission);
 
-console.log(Notification.permission);
 
 if (Notification.permission === 'granted') {
-  document.getElementById('loading').innerHTML = "Loading...";
+  // document.getElementById('loading').innerHTML = "Loading..."
   checkSlot();
   var interval = setInterval(function () {
     return checkSlot(interval);
   }, 60000);
 } else {
   Notification.requestPermission().then(function (permission) {
-    document.getElementById('loading').innerHTML = "Loading....";
-
+    // document.getElementById('loading').innerHTML = "Loading...."
     if (permission === 'granted') {
       checkSlot();
 
