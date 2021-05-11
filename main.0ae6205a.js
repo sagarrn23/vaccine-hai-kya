@@ -20247,16 +20247,22 @@ var checkSlot = function checkSlot(interval) {
     console.log('Notification permission granted');
 
     if (res.length) {
-      var options = {
-        body: 'Vaccine Available!!',
-        silent: false
-      };
-      var not = new Notification('Vaccine Available', options);
-
-      not.onclick = function () {
-        clearInterval(interval);
-        window.open('https://www.cowin.gov.in/home');
-      };
+      // var options = {
+      //     body: 'Vaccine Available!!',
+      //     silent: false
+      // }
+      // const not = new Notification('Vaccine Available', options);
+      // not.onclick = () => {
+      //     clearInterval(interval)
+      //     window.open('https://www.cowin.gov.in/home');
+      // }
+      navigator.serviceWorker.ready.then(function (registration) {
+        registration.showNotification('Vaccine Available', {
+          body: 'Vaccine Available!!',
+          vibrate: [200, 100, 200, 100, 200, 100, 200],
+          tag: 'vibration-sample'
+        });
+      });
     }
 
     document.getElementById('body').innerHTML = finalPrintObj(res);
@@ -20282,5 +20288,19 @@ if (Notification.permission === 'granted') {
       }, 60000);
     }
   });
+} // code for service worker
+
+
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  console.log('Service Worker and Push are supported');
+  navigator.serviceWorker.register("sw.js").then(function (swReg) {
+    console.log('Service Worker is registered', swReg);
+    swRegistration = swReg;
+    subscribePushMessage();
+  }).catch(function (error) {
+    console.error('Service Worker Error', error);
+  });
+} else {
+  console.warn('Push messaging is not supported');
 }
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
