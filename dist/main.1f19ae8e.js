@@ -20146,23 +20146,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-// let swRegistration = null;
-// let isSubscribed = false;
-// // code for service worker
-// if ('serviceWorker' in navigator && 'PushManager' in window) {
-//     console.log('Service Worker and Push are supported');
-//     navigator.serviceWorker.register('sw.js')
-//         .then(function(swReg) {
-//             console.log('Service Worker is registered', swReg);
-//             swRegistration = swReg;
-//             subscribePushMessage()
-//         })
-//         .catch(function(error) {
-//             console.error('Service Worker Error', error);
-//         });
-// } else {
-//     console.warn('Push messaging is not supported');
-// }
 var dates = [0, 7, 14, 21, 28].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
   return dateObj.toLocaleDateString().replace(/\//g, '-');
@@ -20257,39 +20240,7 @@ var finalPrintObj = function finalPrintObj(inputObj) {
   });
   finalHtml += '</div>';
   return finalHtml;
-}; // function subscribePushMessage() {
-//     swRegistration.pushManager.subscribe({
-//         userVisibleOnly: true,  
-//         applicationServerKey: publickKey
-//     })
-//     .then(function(subscription) {
-//         console.log('User IS subscribed.');
-//         isSubscribed = true;
-//         Notification.requestPermission().then((permission) => {
-//             if(permission === 'granted') {
-//                 let interval = setInterval(() => {
-//                     availableSlots.then(res => {
-//                         console.log('Notification permission granted');
-//                         if(res) {
-//                             var options = {
-//                                 body: 'Vaccine Available!!',
-//                                 silent: false
-//                             }
-//                             const not = new Notification('Vaccine Available', options);
-//                             not.onclick = () => {
-//                                 window.open('https://www.cowin.gov.in/home');
-//                             }
-//                         }
-//                         document.getElementById('body').innerHTML = finalPrintObj(res);
-//                         console.log(res);
-//                         clearInterval(interval)
-//                     });
-//                 }, 60000);
-//             }
-//         })
-//     });
-// }
-
+};
 
 var checkSlot = function checkSlot(interval) {
   availableSlots.then(function (res) {
@@ -20315,24 +20266,6 @@ var checkSlot = function checkSlot(interval) {
 
 Notification.requestPermission().then(function (permission) {
   if (permission === 'granted') {
-    // let interval = setInterval(() => {
-    //     availableSlots.then(res => {
-    //         console.log('Notification permission granted');
-    //         if(res) {
-    //             var options = {
-    //                 body: 'Vaccine Available!!',
-    //                 silent: false
-    //             }
-    //             const not = new Notification('Vaccine Available', options);
-    //             not.onclick = () => {
-    //                 clearInterval(interval)
-    //                 window.open('https://www.cowin.gov.in/home');
-    //             }
-    //         }
-    //         document.getElementById('body').innerHTML = finalPrintObj(res);
-    //         console.log(res);
-    //     });
-    // }, 1000);
     checkSlot();
     var interval = setInterval(function () {
       return checkSlot(interval);

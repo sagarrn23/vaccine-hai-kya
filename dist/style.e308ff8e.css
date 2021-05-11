@@ -4,6 +4,19 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 30px;
+    padding: 15px;
+}
+
+@media screen and (max-width: 800px) {
+    .info-wrap {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .info-wrap {
+        grid-template-columns: 1fr;
+    }
 }
 
 .info-wrap ul {
@@ -11,7 +24,7 @@
     margin: 0;
 }
 
-h1 {
+h1, p {
     text-align: center;
 }
 
