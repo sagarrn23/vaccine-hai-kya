@@ -20202,7 +20202,7 @@ var availableSlots = finalCenters.then(function (res) {
   var slot = res.filter(function (item) {
     return item.sessions.filter(function (session) {
       return session.available_capacity > 0;
-    }).length !== 0; // set condition to !== 0
+    }).length === 0; // set condition to !== 0
   }).flat();
 
   var finalAvSlot = _lodash.default.cloneDeep(slot).filter(function (item) {
@@ -20210,7 +20210,8 @@ var availableSlots = finalCenters.then(function (res) {
 
 
     var avSessions = s.filter(function (session) {
-      // return session.date === '11-05-2021'; // delete this line
+      return session.date === '11-05-2021'; // delete this line
+
       return session.available_capacity > 0; // set this conditions
     });
     item.sessions = avSessions;
