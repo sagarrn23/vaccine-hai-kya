@@ -73,7 +73,7 @@ const finalPrintObj = (inputObj) => {
 const checkSlot = (interval) => {
     availableSlots.then(res => {
         console.log('Notification permission granted');
-        if(res) {
+        if(res.length) {
             var options = {
                 body: 'Vaccine Available!!',
                 silent: false

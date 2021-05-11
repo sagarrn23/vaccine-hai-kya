@@ -20246,7 +20246,7 @@ var checkSlot = function checkSlot(interval) {
   availableSlots.then(function (res) {
     console.log('Notification permission granted');
 
-    if (res) {
+    if (res.length) {
       var options = {
         body: 'Vaccine Available!!',
         silent: false
