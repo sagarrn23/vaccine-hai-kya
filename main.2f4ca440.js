@@ -20265,12 +20265,25 @@ var checkSlot = function checkSlot(interval) {
   });
 };
 
-Notification.requestPermission().then(function (permission) {
-  if (permission === 'granted') {
-    checkSlot();
-    var interval = setInterval(function () {
-      return checkSlot(interval);
-    }, 60000);
-  }
-});
+console.log(Notification.permission);
+
+if (Notification.permission === 'granted') {
+  document.getElementById('loading').innerHTML = "Loading...";
+  checkSlot();
+  var interval = setInterval(function () {
+    return checkSlot(interval);
+  }, 60000);
+} else {
+  Notification.requestPermission().then(function (permission) {
+    document.getElementById('loading').innerHTML = "Loading....";
+
+    if (permission === 'granted') {
+      checkSlot();
+
+      var _interval = setInterval(function () {
+        return checkSlot(_interval);
+      }, 60000);
+    }
+  });
+}
 },{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
