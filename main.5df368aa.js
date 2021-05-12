@@ -20146,14 +20146,15 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var dates = [0, 7, 14, 21, 28].map(function (item) {
+var dates = [0, 7, 14].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
   return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth() + 1, "-").concat(dateObj.getFullYear());
 });
-var pinCode = prompt("PinCode"); // this is required
-// const pinCode = 424101; // delete this
+var pinCodes = prompt("PinCode").split(","); // this is required
 
-var vaccineData = function vaccineData() {
+console.log(pinCodes); // const pinCodes = [110001, 110002]; // delete this
+
+var vaccineData = function vaccineData(pinCode) {
   return dates.map( /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(date) {
       var apiUrl, fetchData, getFetchData;
@@ -20192,8 +20193,14 @@ var vaccineData = function vaccineData() {
   }());
 };
 
+var fetchedVaccineDate = function fetchedVaccineDate() {
+  return pinCodes.map(function (pinCode) {
+    return vaccineData(pinCode);
+  }).flat();
+};
+
 var finalCenters = function finalCenters() {
-  return Promise.all(vaccineData()).then(function (res) {
+  return Promise.all(fetchedVaccineDate()).then(function (res) {
     var centers = res.map(function (item) {
       return item === null || item === void 0 ? void 0 : item.centers.map(function (center) {
         return center;
@@ -20293,5 +20300,31 @@ if (Notification.permission === 'granted') {
       }, 60000);
     }
   });
-}
+} // if ('serviceWorker' in navigator) {
+//     console.log('Service Worker and Push are supported');
+//     navigator.serviceWorker.register('sw.js')
+//         .then(function(swReg) {
+//             console.log('Service Worker is registered');
+//         })
+//         .catch(function(error) {
+//             console.error('Service Worker Error', error);
+//         });
+// } else {
+//     console.warn('Push messaging is not supported');
+// }
+// Notification.requestPermission()
+//     .then(result => {
+//         if (result === 'granted') {
+//             navigator.serviceWorker.ready.then(function(registration) {
+//                 registration.showNotification('Vibration Sample', {
+//                     body: 'Buzz! Buzz!',
+//                     vibrate: [200, 100, 200, 100, 200, 100, 200],
+//                     tag: 'vibration-sample'
+//                 });
+//             });
+//         }
+//     })
+//     .catch(error => {
+//         console.log(error);
+//     })
 },{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
