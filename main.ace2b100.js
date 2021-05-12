@@ -20150,7 +20150,13 @@ var dates = [0, 7, 14].map(function (item) {
   var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
   return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth() + 1, "-").concat(dateObj.getFullYear());
 });
-var pinCodes = prompt("PinCodes").split(","); // this is required
+var pinCodes = prompt("PinCodes").split(",").map(function (code) {
+  var pc = +code.trim();
+
+  if (pc.toString().trim().length === 6 && !isNaN(pc) && Number.isInteger(pc)) {
+    return pc;
+  }
+}).filter(Boolean); // this is required
 
 console.log(pinCodes); // const pinCodes = [110001, 110002]; // delete this
 
