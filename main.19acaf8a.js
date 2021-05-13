@@ -20121,12 +20121,16 @@ var define;
   }
 }.call(this));
 
-},{"buffer":"aMB2"}],"epB2":[function(require,module,exports) {
+},{"buffer":"aMB2"}],"zbzq":[function(require,module,exports) {
+
+},{}],"epB2":[function(require,module,exports) {
 "use strict";
 
 require("regenerator-runtime/runtime");
 
 var _lodash = _interopRequireDefault(require("lodash"));
+
+require("./style.scss");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20146,10 +20150,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var dates = [0, 7, 14].map(function (item) {
-  var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth() + 1, "-").concat(dateObj.getFullYear());
-});
 var pinCodes = prompt("PinCodes").split(",").map(function (code) {
   var pc = +code.trim();
 
@@ -20158,7 +20158,18 @@ var pinCodes = prompt("PinCodes").split(",").map(function (code) {
   }
 }).filter(Boolean); // this is required
 
-console.log(pinCodes); // const pinCodes = [110001, 110002]; // delete this
+var weeks = function weeks() {
+  var weeksArr = [0, 7, 14, 21, 28];
+  var weeksLength = prompt('How many weeks?', 3);
+  weeksArr.length = +weeksLength > 4 ? 4 : weeksLength;
+  return weeksArr;
+};
+
+var dates = weeks().map(function (item) {
+  var dateObj = new Date(new Date().setDate(new Date().getDate() + item));
+  return "".concat(dateObj.getDate(), "-").concat(dateObj.getMonth() + 1, "-").concat(dateObj.getFullYear());
+});
+var ifOnly45 = confirm('Press OK if looking for 45+ age group only. Cancel if looking for 18+ age group.') ? 45 : 18; // const pinCodes = [110001, 110002]; // delete this
 
 var vaccineData = function vaccineData(pinCode) {
   return dates.map( /*#__PURE__*/function () {
@@ -20220,7 +20231,7 @@ var availableSlots = function availableSlots() {
   return finalCenters().then(function (res) {
     var slot = res.filter(function (item) {
       return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
-        return session.available_capacity > 0;
+        return session.available_capacity > 0 && session.min_age_limit >= ifOnly45;
       }).length) !== 0; // set condition to !== 0
     }).flat();
 
@@ -20230,7 +20241,7 @@ var availableSlots = function availableSlots() {
 
       var avSessions = s.filter(function (session) {
         // return session.date === '11-05-2021'; // delete this line
-        return session.available_capacity > 0; // set this conditions
+        return session.available_capacity > 0 && session.min_age_limit >= ifOnly45; // set this conditions
       });
       item.sessions = avSessions;
 
@@ -20281,7 +20292,7 @@ var checkSlot = function checkSlot(interval) {
 
       not.onclick = function () {
         if (interval) clearInterval(interval);
-        window.open('https://www.cowin.gov.in/home');
+        window.open('https://selfregistration.cowin.gov.in/');
       };
     }
 
@@ -20333,4 +20344,4 @@ if (Notification.permission === 'granted') {
 //     .catch(error => {
 //         console.log(error);
 //     })
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA"}]},{},["epB2"], null)
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq"}]},{},["epB2"], null)
