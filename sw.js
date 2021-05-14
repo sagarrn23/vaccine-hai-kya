@@ -4,6 +4,11 @@ self.addEventListener('notificationclick', function(event) {
     event.notification.close();
 
     event.waitUntil(
-        clients.openWindow('https://www.cowin.gov.in/home')
+        clients.openWindow('https://selfregistration.cowin.gov.in/')
     );
+
+    self.registration.unregister()
+        .then(function() {
+            console.log('unregistered');
+        })
 });

@@ -101,65 +101,53 @@ const finalPrintObj = (inputObj) => {
     return finalHtml;
 }
 
-const checkSlot = (interval) => {
-    availableSlots().then(res => {
-        console.log('Notification permission granted');
-        console.log(res);
-        if(res.length) {
-            var options = {
-                body: 'Vaccine Available!!',
-                silent: false
-            }
-            const not = new Notification('Vaccine Available', options);
-            not.onclick = () => {
-                if(interval) clearInterval(interval)
-                window.open('https://selfregistration.cowin.gov.in/');
+const checkSlot = (swreg, interval) => {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        if(registrations.length) {
+            availableSlots().then(res => {
+                console.log('Notification permission granted');
+                console.log(res);
+                if(res.length) {
+                    swreg.showNotification('Vaccine Available', {
+                        body: 'Vaccine Available',
+                        vibrate: [200, 100, 200, 100, 200, 100, 200],
+                    });
+                }
+                document.getElementById('body').innerHTML = finalPrintObj(res);
+                console.log(res);
+            });
+        } else {
+            if(interval) {
+                console.log('Checking vaccine interval cleared');
+                clearInterval(interval)
             }
         }
-        document.getElementById('body').innerHTML = finalPrintObj(res);
-        console.log(res);
     });
 }
 
-// console.log(Notification.permission);
-if(Notification.permission === 'granted') {
-    checkSlot();
-    let interval = setInterval(() => checkSlot(interval), 60000)
+if ('serviceWorker' in navigator) {
+    console.log('Service Worker and Push are supported');
+
+    navigator.serviceWorker.register('sw.js')
+        .then(function(swReg) {
+            console.log('Service Worker is registered');
+        })
+        .catch(function(error) {
+            console.error('Service Worker Error', error);
+        });
 } else {
-    Notification.requestPermission().then((permission) => {
-        if(permission === 'granted') {
-            checkSlot();
-            let interval = setInterval(() => checkSlot(interval), 60000)
-        }
-    })
+    console.warn('Push messaging is not supported');
 }
 
-// if ('serviceWorker' in navigator) {
-//     console.log('Service Worker and Push are supported');
-
-//     navigator.serviceWorker.register('sw.js')
-//         .then(function(swReg) {
-//             console.log('Service Worker is registered');
-//         })
-//         .catch(function(error) {
-//             console.error('Service Worker Error', error);
-//         });
-// } else {
-//     console.warn('Push messaging is not supported');
-// }
-
-// Notification.requestPermission()
-//     .then(result => {
-//         if (result === 'granted') {
-//             navigator.serviceWorker.ready.then(function(registration) {
-//                 registration.showNotification('Vibration Sample', {
-//                     body: 'Buzz! Buzz!',
-//                     vibrate: [200, 100, 200, 100, 200, 100, 200],
-//                     tag: 'vibration-sample'
-//                 });
-//             });
-//         }
-//     })
-//     .catch(error => {
-//         console.log(error);
-//     })
+Notification.requestPermission()
+    .then(result => {
+        if (result === 'granted') {
+            navigator.serviceWorker.ready.then(function(registration) {
+                checkSlot(registration);
+                let interval = setInterval(() => checkSlot(registration, interval), 15000)
+            });
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    })
