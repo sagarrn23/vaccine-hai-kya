@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime';
 import _ from 'lodash';
-import './style.scss';
+import './assets/scss/style.scss';
+import logo from './assets/images/vaccine.png';
 
 const pinCodes = prompt("PinCodes").split(",").map(code => {
     const pc = +code.trim();
@@ -74,7 +75,10 @@ const availableSlots = () => {
 }
 
 const finalPrintObj = (inputObj) => {
-    let finalHtml = '<div class="info-wrap">';
+    let finalHtml = '<h3 class="info-msg positive">Vaccine is available!!!</h3>';
+    finalHtml += '<div class="info-wrap">';
+
+    if(!inputObj.length) return `<h3 class="info-msg">Vaccine Unavailable</h3><p>Once any slot is available you will receive the notification and list of available center will appear here.</p>`
 
     inputObj.forEach(item => {
         finalHtml += '<ul class="info-card">';
@@ -108,9 +112,10 @@ const checkSlot = (swreg, interval) => {
                 console.log('Notification permission granted');
                 console.log(res);
                 if(res.length) {
-                    swreg.showNotification('Vaccine Available', {
-                        body: 'Vaccine Available',
+                    swreg.showNotification('Vaccine Available!!', {
+                        body: 'Vaccine Available!!!',
                         vibrate: [200, 100, 200, 100, 200, 100, 200],
+                        icon: logo
                     });
                 }
                 document.getElementById('body').innerHTML = finalPrintObj(res);
@@ -144,7 +149,7 @@ Notification.requestPermission()
         if (result === 'granted') {
             navigator.serviceWorker.ready.then(function(registration) {
                 checkSlot(registration);
-                let interval = setInterval(() => checkSlot(registration, interval), 15000)
+                let interval = setInterval(() => checkSlot(registration, interval), 30000)
             });
         }
     })
