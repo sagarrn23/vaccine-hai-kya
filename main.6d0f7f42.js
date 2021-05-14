@@ -20123,6 +20123,8 @@ var define;
 
 },{"buffer":"aMB2"}],"zbzq":[function(require,module,exports) {
 
+},{}],"Ixos":[function(require,module,exports) {
+module.exports = "vaccine.99fb1106.jpg";
 },{}],"epB2":[function(require,module,exports) {
 "use strict";
 
@@ -20131,6 +20133,8 @@ require("regenerator-runtime/runtime");
 var _lodash = _interopRequireDefault(require("lodash"));
 
 require("./style.scss");
+
+var _vaccine = _interopRequireDefault(require("./vaccine.jpg"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20288,7 +20292,8 @@ var checkSlot = function checkSlot(swreg, interval) {
         if (res.length) {
           swreg.showNotification('Vaccine Available', {
             body: 'Vaccine Available',
-            vibrate: [200, 100, 200, 100, 200, 100, 200]
+            vibrate: [200, 100, 200, 100, 200, 100, 200],
+            image: _vaccine.default
           });
         }
 
@@ -20321,10 +20326,10 @@ Notification.requestPermission().then(function (result) {
       checkSlot(registration);
       var interval = setInterval(function () {
         return checkSlot(registration, interval);
-      }, 15000);
+      }, 30000);
     });
   }
 }).catch(function (error) {
   console.log(error);
 });
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq","./vaccine.jpg":"Ixos","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
