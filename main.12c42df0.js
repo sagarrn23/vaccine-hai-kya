@@ -20293,7 +20293,7 @@ var checkSlot = function checkSlot(swreg, interval) {
           swreg.showNotification('Vaccine Available', {
             body: 'Vaccine Available',
             vibrate: [200, 100, 200, 100, 200, 100, 200],
-            image: _vaccine.default
+            icon: _vaccine.default
           });
         }
 
