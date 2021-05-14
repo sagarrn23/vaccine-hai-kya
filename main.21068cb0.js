@@ -20121,10 +20121,10 @@ var define;
   }
 }.call(this));
 
-},{"buffer":"aMB2"}],"zbzq":[function(require,module,exports) {
+},{"buffer":"aMB2"}],"LGxd":[function(require,module,exports) {
 
-},{}],"Ixos":[function(require,module,exports) {
-module.exports = "vaccine.99fb1106.jpg";
+},{}],"gHY6":[function(require,module,exports) {
+module.exports = "vaccine.ce9f37de.png";
 },{}],"epB2":[function(require,module,exports) {
 "use strict";
 
@@ -20132,9 +20132,9 @@ require("regenerator-runtime/runtime");
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
-require("./style.scss");
+require("./assets/scss/style.scss");
 
-var _vaccine = _interopRequireDefault(require("./vaccine.jpg"));
+var _vaccine = _interopRequireDefault(require("./assets/images/vaccine.png"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20259,7 +20259,9 @@ var availableSlots = function availableSlots() {
 };
 
 var finalPrintObj = function finalPrintObj(inputObj) {
-  var finalHtml = '<div class="info-wrap">';
+  var finalHtml = '<h3 class="info-msg positive">Vaccine is available!!!</h3>';
+  finalHtml += '<div class="info-wrap">';
+  if (!inputObj.length) return "<h3 class=\"info-msg\">Vaccine Unavailable</h3><p>Once any slot is available you will receive the notification and list of available center will appear here.</p>";
   inputObj.forEach(function (item) {
     finalHtml += '<ul class="info-card">';
     finalHtml += "<li><strong>Name:</strong> ".concat(item.name, "</li>");
@@ -20290,8 +20292,8 @@ var checkSlot = function checkSlot(swreg, interval) {
         console.log(res);
 
         if (res.length) {
-          swreg.showNotification('Vaccine Available', {
-            body: 'Vaccine Available',
+          swreg.showNotification('Vaccine Available!!', {
+            body: 'Vaccine Available!!!',
             vibrate: [200, 100, 200, 100, 200, 100, 200],
             icon: _vaccine.default
           });
@@ -20332,4 +20334,4 @@ Notification.requestPermission().then(function (result) {
 }).catch(function (error) {
   console.log(error);
 });
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq","./vaccine.jpg":"Ixos","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./assets/scss/style.scss":"LGxd","./assets/images/vaccine.png":"gHY6","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
