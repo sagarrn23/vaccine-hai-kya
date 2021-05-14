@@ -10,9 +10,11 @@
     "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
+    "autoprefixer": "^9.8.6",
     "cssnano": "^5.0.2",
     "gh-pages": "^3.1.0",
     "parcel-bundler": "^1.12.5",
-    "postcss": "^8.2.15"
+    "postcss": "^8.2.15",
+    "sass": "^1.32.13"
   }
 }

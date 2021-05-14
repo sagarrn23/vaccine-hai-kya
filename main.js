@@ -1,11 +1,7 @@
 import 'regenerator-runtime/runtime';
 import _ from 'lodash';
+import './style.scss';
 
-
-const dates = [0,7,14].map(item => {
-    const dateObj = new Date(new Date().setDate(new Date().getDate() + item));
-    return `${dateObj.getDate()}-${dateObj.getMonth() + 1}-${dateObj.getFullYear()}`;
-})
 const pinCodes = prompt("PinCodes").split(",").map(code => {
     const pc = +code.trim();
     if(pc.toString().trim().length === 6 && !isNaN(pc) && Number.isInteger(pc)) {
@@ -13,7 +9,20 @@ const pinCodes = prompt("PinCodes").split(",").map(code => {
     }
 }).filter(Boolean); // this is required
 
-console.log(pinCodes);
+const weeks = () => {
+    const weeksArr = [0,7,14,21,28];
+    const weeksLength = prompt('How many weeks?', 3);
+    weeksArr.length = +weeksLength > 4 ? 4 : weeksLength;
+    return weeksArr;
+}
+
+
+const dates = weeks().map(item => {
+    const dateObj = new Date(new Date().setDate(new Date().getDate() + item));
+    return `${dateObj.getDate()}-${dateObj.getMonth() + 1}-${dateObj.getFullYear()}`;
+})
+
+const ifOnly45 = confirm('Press OK if looking for 45+ age group only. Cancel if looking for 18+ age group.') ? 45 : 18;
 // const pinCodes = [110001, 110002]; // delete this
 
 const vaccineData = (pinCode) => {
@@ -44,7 +53,7 @@ const availableSlots = () => {
     return finalCenters().then(res => {
         const slot = res.filter(item => {
             return item?.sessions.filter(session => {
-                return session.available_capacity > 0;
+                return session.available_capacity > 0 && session.min_age_limit >= ifOnly45;
             }).length !== 0; // set condition to !== 0
         }).flat();
     
@@ -53,7 +62,7 @@ const availableSlots = () => {
             // console.log(item);
             const avSessions = s.filter(session => {
                 // return session.date === '11-05-2021'; // delete this line
-                return session.available_capacity > 0 // set this conditions
+                return session.available_capacity > 0 && session.min_age_limit >= ifOnly45; // set this conditions
             });
             item.sessions = avSessions;
             if(item.sessions.length) {
@@ -104,7 +113,7 @@ const checkSlot = (interval) => {
             const not = new Notification('Vaccine Available', options);
             not.onclick = () => {
                 if(interval) clearInterval(interval)
-                window.open('https://www.cowin.gov.in/home');
+                window.open('https://selfregistration.cowin.gov.in/');
             }
         }
         document.getElementById('body').innerHTML = finalPrintObj(res);
