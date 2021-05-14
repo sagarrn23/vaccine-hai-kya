@@ -20278,70 +20278,53 @@ var finalPrintObj = function finalPrintObj(inputObj) {
   return finalHtml;
 };
 
-var checkSlot = function checkSlot(interval) {
-  availableSlots().then(function (res) {
-    console.log('Notification permission granted');
-    console.log(res);
+var checkSlot = function checkSlot(swreg, interval) {
+  navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    if (registrations.length) {
+      availableSlots().then(function (res) {
+        console.log('Notification permission granted');
+        console.log(res);
 
-    if (res.length) {
-      var options = {
-        body: 'Vaccine Available!!',
-        silent: false
-      };
-      var not = new Notification('Vaccine Available', options);
+        if (res.length) {
+          swreg.showNotification('Vaccine Available', {
+            body: 'Vaccine Available',
+            vibrate: [200, 100, 200, 100, 200, 100, 200]
+          });
+        }
 
-      not.onclick = function () {
-        if (interval) clearInterval(interval);
-        window.open('https://selfregistration.cowin.gov.in/');
-      };
+        document.getElementById('body').innerHTML = finalPrintObj(res);
+        console.log(res);
+      });
+    } else {
+      if (interval) {
+        console.log('Checking vaccine interval cleared');
+        clearInterval(interval);
+      }
     }
-
-    document.getElementById('body').innerHTML = finalPrintObj(res);
-    console.log(res);
   });
-}; // console.log(Notification.permission);
+};
 
-
-if (Notification.permission === 'granted') {
-  checkSlot();
-  var interval = setInterval(function () {
-    return checkSlot(interval);
-  }, 60000);
+if ('serviceWorker' in navigator) {
+  console.log('Service Worker and Push are supported');
+  navigator.serviceWorker.register("sw.js").then(function (swReg) {
+    console.log('Service Worker is registered');
+  }).catch(function (error) {
+    console.error('Service Worker Error', error);
+  });
 } else {
-  Notification.requestPermission().then(function (permission) {
-    if (permission === 'granted') {
-      checkSlot();
+  console.warn('Push messaging is not supported');
+}
 
-      var _interval = setInterval(function () {
-        return checkSlot(_interval);
-      }, 60000);
-    }
-  });
-} // if ('serviceWorker' in navigator) {
-//     console.log('Service Worker and Push are supported');
-//     navigator.serviceWorker.register('sw.js')
-//         .then(function(swReg) {
-//             console.log('Service Worker is registered');
-//         })
-//         .catch(function(error) {
-//             console.error('Service Worker Error', error);
-//         });
-// } else {
-//     console.warn('Push messaging is not supported');
-// }
-// Notification.requestPermission()
-//     .then(result => {
-//         if (result === 'granted') {
-//             navigator.serviceWorker.ready.then(function(registration) {
-//                 registration.showNotification('Vibration Sample', {
-//                     body: 'Buzz! Buzz!',
-//                     vibrate: [200, 100, 200, 100, 200, 100, 200],
-//                     tag: 'vibration-sample'
-//                 });
-//             });
-//         }
-//     })
-//     .catch(error => {
-//         console.log(error);
-//     })
-},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq"}]},{},["epB2"], null)
+Notification.requestPermission().then(function (result) {
+  if (result === 'granted') {
+    navigator.serviceWorker.ready.then(function (registration) {
+      checkSlot(registration);
+      var interval = setInterval(function () {
+        return checkSlot(registration, interval);
+      }, 15000);
+    });
+  }
+}).catch(function (error) {
+  console.log(error);
+});
+},{"regenerator-runtime/runtime":"KA2S","lodash":"HJaA","./style.scss":"zbzq","./sw.js":[["sw.js","NqYy"],"NqYy"]}]},{},["epB2"], null)
