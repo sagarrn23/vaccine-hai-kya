@@ -20162,10 +20162,11 @@ var pinCodes = prompt("PinCodes").split(",").map(function (code) {
   }
 }).filter(Boolean); // this is required
 
+var weeksLength = prompt('How many weeks?', 3);
+
 var weeks = function weeks() {
   var weeksArr = [0, 7, 14, 21, 28];
-  var weeksLength = prompt('How many weeks?', 3);
-  weeksArr.length = +weeksLength > 4 ? 4 : weeksLength;
+  weeksArr.length = +weeksLength > 4 ? 4 : +weeksLength <= 0 ? 1 : weeksLength;
   return weeksArr;
 };
 
@@ -20322,13 +20323,17 @@ if ('serviceWorker' in navigator) {
   console.warn('Push messaging is not supported');
 }
 
+var intervalTiming = function intervalTiming() {
+  return 60 / (20 / (pinCodes.length * +weeksLength)) * 1000;
+};
+
 Notification.requestPermission().then(function (result) {
   if (result === 'granted') {
     navigator.serviceWorker.ready.then(function (registration) {
       checkSlot(registration);
       var interval = setInterval(function () {
         return checkSlot(registration, interval);
-      }, 30000);
+      }, intervalTiming());
     });
   }
 }).catch(function (error) {
