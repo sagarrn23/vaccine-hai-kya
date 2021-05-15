@@ -10,10 +10,10 @@ const pinCodes = prompt("PinCodes").split(",").map(code => {
     }
 }).filter(Boolean); // this is required
 
+const weeksLength = prompt('How many weeks?', 3);
 const weeks = () => {
     const weeksArr = [0,7,14,21,28];
-    const weeksLength = prompt('How many weeks?', 3);
-    weeksArr.length = +weeksLength > 4 ? 4 : weeksLength;
+    weeksArr.length = +weeksLength > 4 ? 4 : +weeksLength <=0 ? 1 : weeksLength;
     return weeksArr;
 }
 
@@ -144,12 +144,16 @@ if ('serviceWorker' in navigator) {
     console.warn('Push messaging is not supported');
 }
 
+const intervalTiming = () => {
+    return (60/(20/(pinCodes.length * +weeksLength)))*1000;
+}
+
 Notification.requestPermission()
     .then(result => {
         if (result === 'granted') {
             navigator.serviceWorker.ready.then(function(registration) {
                 checkSlot(registration);
-                let interval = setInterval(() => checkSlot(registration, interval), 30000)
+                let interval = setInterval(() => checkSlot(registration, interval), intervalTiming())
             });
         }
     })
