@@ -3,14 +3,14 @@ import _ from 'lodash';
 import './assets/scss/style.scss';
 import logo from './assets/images/vaccine.png';
 
-const pinCodes = prompt("PinCodes").split(",").map(code => {
+const pinCodes = prompt("Enter the Pincode number(s) where you would like to check the vaccines availability. In case of Multiple Pincodes separate them by comma (,)").split(",").map(code => {
     const pc = +code.trim();
     if(pc.toString().trim().length === 6 && !isNaN(pc) && Number.isInteger(pc)) {
         return pc
     }
 }).filter(Boolean); // this is required
 
-const weeksLength = prompt('How many weeks?', 3);
+const weeksLength = prompt('How many weeks would you like us to track the vaccines?', 3);
 const weeks = () => {
     const weeksArr = [0,7,14,21,28];
     weeksArr.length = +weeksLength > 4 ? 4 : +weeksLength <=0 ? 1 : weeksLength;
