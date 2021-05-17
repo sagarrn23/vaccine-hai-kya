@@ -20298,6 +20298,7 @@ var checkSlot = function checkSlot(swreg, interval) {
             vibrate: [200, 100, 200, 100, 200, 100, 200],
             icon: _vaccine.default
           });
+          document.getElementById('notification').play();
         }
 
         document.getElementById('body').innerHTML = finalPrintObj(res);
