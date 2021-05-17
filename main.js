@@ -78,7 +78,7 @@ const finalPrintObj = (inputObj) => {
     let finalHtml = '<h3 class="info-msg positive">Vaccine is available!!!</h3>';
     finalHtml += '<div class="info-wrap">';
 
-    if(!inputObj.length) return `<h3 class="info-msg">Vaccine Unavailable</h3><p>Once any slot is available you will receive the notification and list of available center will appear here.</p>`
+    if(!inputObj.length) return `<h3 class="info-msg">Vaccine Unavailable</h3><p class="info-desc">We will check after every ${intervalTiming()/1000} seconds. Once any slot is available you will receive the notification and list of available center will appear here. Please keep the tab running in the background.</p>`
 
     inputObj.forEach(item => {
         finalHtml += '<ul class="info-card">';
