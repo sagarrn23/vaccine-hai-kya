@@ -431,3 +431,7 @@ h1, p {
   text-align: left;
   margin: 0;
 }
+
+.audio-wrap {
+  display: none;
+}
