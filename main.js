@@ -26,6 +26,8 @@ const dates = weeks().map(item => {
 const ifOnly45 = confirm('Press OK if looking for 45+ age group only. Cancel if looking for 18+ age group.') ? 45 : 18;
 // const pinCodes = [110001, 110002]; // delete this
 
+const doseNumber = +prompt('First or second dose? Enter 1 for first dose and 2 for second', 1);
+
 const vaccineData = (pinCode) => {
     return dates.map(async (date) => {
         const apiUrl = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${pinCode}&date=${date}`;
@@ -54,7 +56,7 @@ const availableSlots = () => {
     return finalCenters().then(res => {
         const slot = res.filter(item => {
             return item?.sessions.filter(session => {
-                return session.available_capacity > 0 && session.min_age_limit >= ifOnly45;
+                return session.available_capacity > 0 && session.min_age_limit == ifOnly45 && session[`available_capacity_dose${doseNumber}`] > 0;
             }).length !== 0; // set condition to !== 0
         }).flat();
     
@@ -63,13 +65,15 @@ const availableSlots = () => {
             // console.log(item);
             const avSessions = s.filter(session => {
                 // return session.date === '11-05-2021'; // delete this line
-                return session.available_capacity > 0 && session.min_age_limit >= ifOnly45; // set this conditions
+                return session.available_capacity > 0 && session.min_age_limit == ifOnly45 && session[`available_capacity_dose${doseNumber}`] > 0; // set this conditions
             });
             item.sessions = avSessions;
             if(item.sessions.length) {
                 return item;
             }
         })
+        console.log(doseNumber);
+        console.log(finalAvSlot.flat());
         return finalAvSlot.flat();
     });
 }
