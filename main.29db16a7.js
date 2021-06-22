@@ -20176,6 +20176,8 @@ var dates = weeks().map(function (item) {
 });
 var ifOnly45 = confirm('Press OK if looking for 45+ age group only. Cancel if looking for 18+ age group.') ? 45 : 18; // const pinCodes = [110001, 110002]; // delete this
 
+var doseNumber = +prompt('First or second dose? Enter 1 for first dose and 2 for second', 1);
+
 var vaccineData = function vaccineData(pinCode) {
   return dates.map( /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(date) {
@@ -20236,7 +20238,7 @@ var availableSlots = function availableSlots() {
   return finalCenters().then(function (res) {
     var slot = res.filter(function (item) {
       return (item === null || item === void 0 ? void 0 : item.sessions.filter(function (session) {
-        return session.available_capacity > 0 && session.min_age_limit >= ifOnly45;
+        return session.available_capacity > 0 && session.min_age_limit == ifOnly45 && session["available_capacity_dose".concat(doseNumber)] > 0;
       }).length) !== 0; // set condition to !== 0
     }).flat();
 
@@ -20246,7 +20248,7 @@ var availableSlots = function availableSlots() {
 
       var avSessions = s.filter(function (session) {
         // return session.date === '11-05-2021'; // delete this line
-        return session.available_capacity > 0 && session.min_age_limit >= ifOnly45; // set this conditions
+        return session.available_capacity > 0 && session.min_age_limit == ifOnly45 && session["available_capacity_dose".concat(doseNumber)] > 0; // set this conditions
       });
       item.sessions = avSessions;
 
@@ -20255,6 +20257,8 @@ var availableSlots = function availableSlots() {
       }
     });
 
+    console.log(doseNumber);
+    console.log(finalAvSlot.flat());
     return finalAvSlot.flat();
   });
 };
